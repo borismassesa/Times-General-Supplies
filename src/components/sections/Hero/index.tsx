@@ -7,46 +7,62 @@ import Container from '@/components/ui/Container'
 
 const Hero = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [currentWordIndex, setCurrentWordIndex] = useState(0)
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [])
+  const rotatingWords = [
+    'Printing Solutions',
+    'Graphic Design',
+    'Business Supplies',
+    'Office Solutions'
+  ]
 
   const images = [
     {
       src: '/images/hero-1.jpg',
       alt: 'Professional printing machinery in action',
       title: 'Professional Printing Solutions',
-      description: 'Delivering excellence in printing services with cutting-edge technology and unmatched quality for over two decades.',
+      description: 'Delivering precision printing services with cutting-edge technology and unmatched quality for over two decades.',
     },
     {
       src: '/images/hero-2.jpg',
       alt: 'High-quality printed materials showcase',
       title: 'Professional Printing Solutions',
-      description: 'Delivering excellence in printing services with cutting-edge technology and unmatched quality for over two decades.',
+      description: 'Delivering precision printing services with cutting-edge technology and unmatched quality for over two decades.',
     },
     {
       src: '/images/hero-3.jpg',
       alt: 'Digital printing process demonstration',
       title: 'Professional Printing Solutions',
-      description: 'Delivering excellence in printing services with cutting-edge technology and unmatched quality for over two decades.',
+      description: 'Delivering precision printing services with cutting-edge technology and unmatched quality for over two decades.',
     },
     {
       src: '/images/hero-4.jpg',
       alt: 'Wide format printing capabilities',
       title: 'Professional Printing Solutions',
-      description: 'Delivering excellence in printing services with cutting-edge technology and unmatched quality for over two decades.',
+      description: 'Delivering precision printing services with cutting-edge technology and unmatched quality for over two decades.',
     },
     {
       src: '/images/hero-5.jpg',
       alt: 'Precision color matching process',
       title: 'Professional Printing Solutions',
-      description: 'Delivering excellence in printing services with cutting-edge technology and unmatched quality for over two decades.',
+      description: 'Delivering precision printing services with cutting-edge technology and unmatched quality for over two decades.',
     },
   ]
+
+  useEffect(() => {
+    const imageTimer = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length)
+    }, 3000)
+
+    const wordTimer = setInterval(() => {
+      setCurrentWordIndex((prev) => (prev + 1) % rotatingWords.length)
+    }, 3000)
+
+    return () => {
+      clearInterval(imageTimer)
+      clearInterval(wordTimer)
+    }
+  }, [])
 
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20">
@@ -64,11 +80,8 @@ const Hero = () => {
 
       {/* Gradient Overlays for Fading Effect */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Top and Bottom Fades */}
         <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white opacity-75" />
         <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-white opacity-75" />
-
-        {/* Left and Right Fades */}
         <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-white opacity-45" />
         <div className="absolute inset-0 bg-gradient-to-l from-white via-transparent to-white opacity-45" />
       </div>
@@ -81,24 +94,40 @@ const Hero = () => {
             transition={{ duration: 0.5 }}
           >
             <motion.h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-neutral-dark"
+              className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-neutral-dark flex flex-col"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              Professional <span className="text-primary">Printing Solutions</span>
+              <span className="mb-2">Excellence in</span>
+              <span className="relative inline-block min-w-[300px] sm:min-w-[340px] lg:min-w-[400px] h-[1.2em]">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={rotatingWords[currentWordIndex]}
+                    className="absolute left-0 right-0 text-[#FF4500]"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{
+                      duration: 0.6,
+                      ease: 'easeInOut',
+                    }}
+                  >
+                    {rotatingWords[currentWordIndex]}
+                  </motion.span>
+                </AnimatePresence>
+              </span>
             </motion.h1>
             <motion.p
-              className="mt-6 text-lg sm:text-xl text-neutral-600 max-w-2xl lg:max-w-none mx-auto"
+              className="mt-4 text-lg sm:text-xl text-neutral-600 max-w-2xl lg:max-w-none mx-auto"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
             >
-              Delivering excellence in printing services with cutting-edge technology and unmatched
-              quality for over two decades.
+              Delivering precision printing services with cutting-edge technology and unmatched quality for over two decades.
             </motion.p>
             <motion.div
-              className="mt-10 flex flex-wrap justify-center lg:justify-start gap-4"
+              className="mt-8 flex flex-wrap justify-center lg:justify-start gap-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
@@ -126,24 +155,26 @@ const Hero = () => {
             transition={{ duration: 0.5 }}
             className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-white shadow-xl"
           >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentImageIndex}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 bg-white"
-              >
-                <Image
-                  src={images[currentImageIndex].src}
-                  alt={images[currentImageIndex].alt}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </motion.div>
-            </AnimatePresence>
+            <div className="absolute inset-0">
+              {images.map((image, index) => (
+                <div
+                  key={image.src}
+                  className={`absolute inset-0 transition-opacity duration-500 ${
+                    index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+                  }`}
+                >
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    className="object-cover"
+                    priority={true}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    quality={90}
+                  />
+                </div>
+              ))}
+            </div>
           </motion.div>
         </div>
       </Container>
